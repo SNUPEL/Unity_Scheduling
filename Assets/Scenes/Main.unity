@@ -157,9 +157,11 @@ MonoBehaviour:
     type: 3}
   colorPath: color.csv
   positionPath: position.csv
-  timePath: 2024-10-22-18-40-21_Unity_log.csv
-  IATPath: 2024-10-22-18-40-21_IAT.csv
+  timePath: Time2.csv
+  IATPath: IAT_example.csv
   parent: {fileID: 0}
+  numBlocks: 10
+  timescale: 20
   isFinished: 0
 --- !u!4 &530471197
 Transform:

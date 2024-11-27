@@ -6,19 +6,12 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public void Initialize(Color _color, int _blockIndex, 
-        List<Vector3> _positions, Vector3 _source, Vector3 _sink, float _created,
-        float[] _moveTime, float[] _finishTime, float[] _startTime)
+    public void Initialize(Color _color, int _blockIndex, float _created, JobData _jobdata)
     {
         originalColor = _color;
         blockindex = _blockIndex;
-        positions = _positions;
         created = _created;
-        movetime = _moveTime;
-        finishtime = _finishTime;
-        starttime = _startTime;
-        currentPosition = _source;
-        sink = _sink;
+        jobdata = _jobdata;
 
     }
 
@@ -40,9 +33,9 @@ public class Block : MonoBehaviour
 
         return darkColor;
     }
-
-    public List<Vector3> positions;
-    public Vector3 sink;
+    public JobData jobdata;
+    //public Vector3 sink;
+    //public Vector3 source;
     public int currentindex = 0; // 앞으로 position이나 time array 의 값을 참조할 때 사용할 index 변수
     public Vector3 currentPosition;     // 현재 위치
     public Vector3 targetPosition;      // 목표 위치
@@ -56,13 +49,12 @@ public class Block : MonoBehaviour
     private float colorChangeDuration;  // 색상이 변하는 시간
     private float colorChangeProgress = 0.0f;  // 색상 변경 진행 상태 (0.0f ~ 1.0f)
 
-    public float[] finishtime;
-    public float[] movetime;
-    public float[] starttime;
-    private int num_process;
+
+    // sink index : jobdata.waypoints.Count - 1
+    float finishtime;
     public int blockindex;
     private float timer = 0.0f;          
-    private float delta;
+    private float delta = 0.0f;
     private float target_delta;
     private float created;
 
@@ -80,15 +72,18 @@ public class Block : MonoBehaviour
     {
         isFinished = false;
         isCreated = false;
-        transform.position = currentPosition;
-        positions[0] = transform.position;
-        targetPosition = positions[0];
+        currentindex = 0;
+        finishtime = jobdata.waypoints[jobdata.waypoints.Count - 1]._finish;
+
+        transform.position = jobdata.waypoints[currentindex]._position;
+        targetPosition = transform.position;
 
         transparentColor = originalColor;
         transparentColor.a = 0.0f;
         blockrenderer = GetComponent<Renderer>();
         blockrenderer.material.color = transparentColor;
         Debug.Log("This block " + blockindex + " is now transparent until " + created);
+
 
         if (blockrenderer == null)
         {
@@ -98,31 +93,31 @@ public class Block : MonoBehaviour
 
         darkColor = CreateDarkColor(originalColor);
 
-        num_process = starttime.Length;
-        delta = movetime[0];
-        target_delta = movetime[1] - movetime[0];
+        // num_process = starttime.Length;
+        delta = 0.0f;
+        target_delta = jobdata.waypoints[currentindex+1]._move - 0.0f;
         //target_delta = movetime[0] - 0.0f;
-        // Debug.Log("Block" + blockindex + "has to wait till " + target_delta);
-        SetTarget(positions[0]);
+        Debug.Log("Block" + blockindex + "has to wait till " + target_delta);
+        SetTarget(targetPosition);
 
     }
     
     
     void Update()
     {
-        
-        if (timer >= finishtime[finishtime.Length - 1])
+
+        if (timer >= finishtime)
         {
             if (isFinished == false)
             {
                 currentPosition = transform.position;
                 blockrenderer.material.color = Color.black;
                 moveProgress = 0.0f;
-                targetPosition = sink;
+                targetPosition = jobdata.waypoints[jobdata.waypoints.Count-1]._position;
             }
-            
-            Sink();
 
+            //Sink();
+            Move();
             isFinished = true;
             return;
         }
@@ -132,16 +127,11 @@ public class Block : MonoBehaviour
             if (timer >= created)
             {
                 blockrenderer.material.color = originalColor;
-                Debug.Log("Now this Block" + blockindex + "Turned Opaque!");
                 isCreated = true;
             }
             else
             {
                 blockrenderer.material.color = transparentColor;
-                Debug.Log("Block"+blockindex + "\t a : " +blockrenderer.material.color.a);
-                Debug.Log("Block"+blockindex + "\t r : " + blockrenderer.material.color.r);
-                Debug.Log("Block"+blockindex + "\t g : " + blockrenderer.material.color.g);
-                Debug.Log("Block"+blockindex + "\t b : " + blockrenderer.material.color.b);
             }
         }
         
@@ -149,21 +139,23 @@ public class Block : MonoBehaviour
         if (delta > target_delta) // 단 한 번 호출되는 함수. movetime 도달을 제어
         {
             delta = 0.0f;
-            if (blockindex == 1)
-            {
-                Debug.Log("At" + timer + ", Job " + blockindex + "set target to " + (positions[currentindex].x, positions[currentindex].y, positions[currentindex].z));
-            }
 
             currentindex += 1; // 0에서 1로 변경
-            SetTarget(positions[currentindex]);
+            Vector3 waypoint = jobdata.waypoints[currentindex]._position;
+
+            Debug.Log(timer + "Block " + blockindex + "'s currentindex now set to " + currentindex);
+            Debug.Log(timer + "Block " + blockindex + " moving towards... " + waypoint);
+
+            SetTarget(waypoint);
             moveProgress = 0.0f;
             //colorChangeProgress = 0.0f;
             //colorChangeDuration = finishtime[currentindex] - starttime[currentindex];
             //blockrenderer.material.color = originalColor;
 
-            if (currentindex != num_process - 1) // 만약 마지막 process가 아니라면, 1 더해줌
+            if (currentindex < jobdata.waypoints.Count - 1) // 만약 그렇게 해서 1 더해진 currentindex가 마지막 process가 아니라면, 1 더해줌
             {
-                target_delta = movetime[currentindex + 1] - movetime[currentindex];
+                target_delta = jobdata.waypoints[currentindex + 1]._move - jobdata.waypoints[currentindex]._move;
+                Debug.Log(timer+"\tBlock " + blockindex + "'s new target_delta now set to " + target_delta);
             }
             else
             {
@@ -173,7 +165,7 @@ public class Block : MonoBehaviour
         }
         if (isCreated == true)
         {
-            if (timer >= movetime[currentindex] && timer <= starttime[currentindex])
+            if (timer >= jobdata.waypoints[currentindex]._move && timer <= jobdata.waypoints[currentindex]._start)
             {
                 blockrenderer.material.color = darkColor;
                 Move();
@@ -184,7 +176,7 @@ public class Block : MonoBehaviour
                 {
                     Move();
                 }
-                if (timer > starttime[currentindex] && timer < finishtime[currentindex])
+                if (timer > jobdata.waypoints[currentindex]._start && timer < jobdata.waypoints[currentindex]._finish)
                 {
                     check_arrival();
                     blockrenderer.material.color = originalColor;
