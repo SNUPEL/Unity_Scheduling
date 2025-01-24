@@ -112,7 +112,7 @@ public class Machine
     // Start is called before the first frame update
     void Start()
         {
-            Time.timeScale = 20f;
+            Time.timeScale = 40f;
             sink_idx = 0;
             jobs = new Job[numBlocks];
             machines = new Machine[numMachine];

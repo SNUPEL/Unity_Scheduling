@@ -104,7 +104,7 @@ public class SingleJobBlock : MonoBehaviour
 
     void Start()
     {
-
+        
         isCreated = false;
         isFinished = false;
         updated = false;
@@ -313,38 +313,6 @@ public class SingleJobBlock : MonoBehaviour
        // {
             
        // }
-
-    //    if (delta > target_delta)                                               // Checks if time since last waypoint change has passed the target time for reaching the next waypoint
-    //    {
-   //         delta = 0.0f;                                                       // Resets delta time
-   //         currentindex += 1;                                                  // Move to the next waypoint
-   //         Vector3 waypoint = jobData.waypoints[currentindex - 1]._created;      // Retrieve the position of the current waypoint
-//
-  //          Debug.Log(timer + "Block " + blockindex + "'s currentindex now set to " + currentindex);
-  //          Debug.Log(timer + "Block " + blockindex + " moving towards... " + waypoint);
-
-  //          SetTarget(waypoint);                                                // Set the new target and reset movement progress
-   //         moveProgress = 0.0f;                                                // Resets moveProgress to initial progress
-
-            // Update target_delta for the next waypoint or stop if this is the last one
-            // Checks if the current waypoint is not the last one, updates target_delta if there are more waypoints to process
-    //        if (currentindex < jobData.waypoints.Count - 1)
-
-     //       {
-                // Sets target time interval for reaching the next waypoint by using the move times of the current and next waypoints.
-    //            target_delta = jobData.waypoints[currentindex + 1]._move - jobData.waypoints[currentindex]._move;
-     //           Debug.Log(timer + "\tBlock " + blockindex + "'s new target_delta now set to " + target_delta);
-     //       }
-     //       else
-     //       {
-     //           target_delta = float.MaxValue;                                  //Setting target_delta to float.MaxValue to depict last waypoint transition
-     //       }
-
-      //  }
-        // Increment timers for movement and waypoint transitions
-      //  timer += Time.deltaTime;
-       // delta += Time.deltaTime;
-
      
     // Function to see if the block has arrived at the target position or not 
     void check_arrival()
