@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8814786855944914289
 Transform:
   m_ObjectHideFlags: 0
@@ -59,9 +59,6 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -96,21 +93,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 507142347858533909}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66dac3c7ba3bbee40ae781fc4adeb2de, type: 3}
+  m_Script: {fileID: 11500000, guid: 130d21bad1a401e49ae5101793f4dd25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sink: {x: 0, y: 0, z: 0}
+  source: {x: 0, y: 0, z: 0}
+  position: {x: 0, y: 0, z: 0}
   currentindex: 0
   currentPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
-  processColor: {r: 0, g: 1, b: 0, a: 1}
   originalColor: {r: 0, g: 0, b: 0, a: 0}
-  darkColor: {r: 0, g: 0, b: 0, a: 0}
   transparentColor: {r: 0, g: 0, b: 0, a: 0}
-  movingTime: 0.5
+  darkColor: {r: 0, g: 0, b: 0, a: 0}
+  movingTime: 2
+  isSinkUpdated: 0
   blockindex: 0
-  isFinished: 0
   isCreated: 0
-  blockrenderer: {fileID: 0}
-  manager: {fileID: 3049603886214874300, guid: 07cd6f07bb82b654fa98b111f2972faf, type: 3}
-  block: {fileID: 0}
-  house: {fileID: 0}
+  isFinished: 0
+  blockrenderer: {fileID: 5833299662569850561}
